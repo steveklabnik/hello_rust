@@ -1,0 +1,30 @@
+body {
+    max-width: 1125px;
+}
+
+h1 {
+    font-size: 90px;
+}
+
+body, pre {
+    font-size: 45px;
+}
+
+section {
+    display: none;
+}
+
+section.current {
+    display: block;
+}
+
+section.title-slide {
+    text-align: center;
+    font-weight: bold;
+    font-size: 150%;
+}
+
+code.language-text {
+    /* Servo doesn't support pre-wrap yet */
+    white-space: normal;
+}
