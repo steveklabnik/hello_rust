@@ -317,6 +317,20 @@ $ cargo run
 Hello, world!
 ```
 
+# Zero Cost Abstraction
+
+```rust
+fn main() {
+    let xs = [1, 2, 3, 4, 5];
+
+    let xs: Vec<int> = xs.iter()
+                         .map(|x| x + 1 )
+                         .filter(|x| x % 2i == 0 )
+                         .collect();
+
+}
+```
+
 # Thanks!
 
 ![rust logo](http://www.rust-lang.org/logos/rust-logo-256x256-blk.png)

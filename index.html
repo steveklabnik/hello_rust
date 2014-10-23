@@ -385,6 +385,19 @@ git = &quot;https://github.com/rust-lang/semver.git&quot;
 Hello, world!
 </code></pre>
 
+<h1 id="zero-cost-abstraction" class='section-header'><a
+                           href="#zero-cost-abstraction">Zero Cost Abstraction</a></h1><pre class='rust '>
+<span class='kw'>fn</span> <span class='ident'>main</span>() {
+    <span class='kw'>let</span> <span class='ident'>xs</span> <span class='op'>=</span> [<span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>];
+
+    <span class='kw'>let</span> <span class='ident'>xs</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>int</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>xs</span>.<span class='ident'>iter</span>()
+                         .<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>x</span><span class='op'>|</span> <span class='ident'>x</span> <span class='op'>+</span> <span class='number'>1</span> )
+                         .<span class='ident'>filter</span>(<span class='op'>|</span><span class='ident'>x</span><span class='op'>|</span> <span class='ident'>x</span> <span class='op'>%</span> <span class='number'>2i</span> <span class='op'>==</span> <span class='number'>0</span> )
+                         .<span class='ident'>collect</span>();
+
+}
+</pre>
+
 <h1 id="thanks!" class='section-header'><a
                            href="#thanks!">Thanks!</a></h1>
 <p><img src="http://www.rust-lang.org/logos/rust-logo-256x256-blk.png" alt="rust logo"></p>
