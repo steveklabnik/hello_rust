@@ -323,11 +323,11 @@ Hello, world!
 fn main() {
     let xs = [1, 2, 3, 4, 5];
 
-    let xs: Vec<int> = xs.iter()
-                         .map(|x| x + 1 )
-                         .filter(|x| x % 2i == 0 )
-                         .collect();
+    let mut xs = xs.iter()
+	           .map(|x| x + 1 )
+	           .filter(|x| x % 2i == 0 );
 
+    let xs: Vec<int> = xs.collect();
 }
 ```
 
