@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="generator" content="rustdoc">
-    <title>My magnificent slides</title>
+    <title>Hello, Rust!</title>
 
     
     <link rel="stylesheet" href="http://doc.rust-lang.org/rust.css">
@@ -21,30 +21,378 @@
     <![endif]-->
 
     
-    <h1 class="title">My magnificent slides</h1>
-    <p>Keegan McAllister</p>
+    <h1 class="title">Hello, Rust!</h1>
+    <p><img src="http://www.rust-lang.org/logos/rust-logo-256x256-blk.png" alt="rust logo"></p>
 
-<p>October 16, 2014</p>
+<p>@steveklabnik</p>
 
-<h1 id="hello,-world!" class='section-header'><a
-                           href="#hello,-world!">Hello, world!</a></h1>
-<p>It&#39;s so easy!</p>
-<pre class='rust '>
+<h1 id="meta" class='section-header'><a
+                           href="#meta">Meta</a></h1>
+<p>Rust is a new programming language from Mozilla (and friends).</p>
+
+<p>Rust is a <em>low-level</em> programming language that often feels like a <em>high level</em>
+one.</p>
+
+<p>Rust makes low-level programming <strong>accessible</strong> to those who haven&#39;t done it, and
+<strong>safer</strong> for those who have.</p>
+
+<h1 id="tradeoffs" class='section-header'><a
+                           href="#tradeoffs">Tradeoffs</a></h1>
+<p><img src="swift.png" alt="swift"></p>
+
+<h1 id="safety?" class='section-header'><a
+                           href="#safety?">Safety?</a></h1>
+<p>Let&#39;s talk about <strong>safety</strong>.</p>
+
+<p>Low level programming has historically been very, very, very unsafe.</p>
+
+<h1 id="safety?-1" class='section-header'><a
+                           href="#safety?-1">Safety?</a></h1>
+<p>Here&#39;s some Ruby:</p>
+
+<pre><code class="language-ruby">v = [];
+
+v.push(&quot;Hello&quot;);
+
+x = v[0];
+
+v.push(&quot;world&quot;);
+
+puts x
+</code></pre>
+
+<h1 id="safety?-2" class='section-header'><a
+                           href="#safety?-2">Safety?</a></h1>
+<p>Here&#39;s some C++:</p>
+
+<pre><code class="language-cpp">#include&lt;iostream&gt;
+#include&lt;vector&gt;
+#include&lt;string&gt;
+
+int main() {
+    std::vector&lt;std::string&gt; v;
+
+    v.push_back(&quot;Hello&quot;);
+
+    std::string&amp; x = v[0];
+
+    v.push_back(&quot;world&quot;);
+
+    std::cout &lt;&lt; x;
+}
+</code></pre>
+
+<h1 id="safety?-3" class='section-header'><a
+                           href="#safety?-3">Safety?</a></h1>
+<pre><code class="language-bash">$ g++ hello.cpp -Wall -Werror
+$ ./a.out 
+Segmentation fault (core dumped)
+</code></pre>
+
+<h1 id="safety?-4" class='section-header'><a
+                           href="#safety?-4">Safety?</a></h1>
+<pre><code class="language-cpp">int main() {
+    std::vector&lt;std::string&gt; v;
+</code></pre>
+
+<table><thead>
+<tr>
+<th>location</th>
+<th>name</th>
+<th>value</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>0x30</td>
+<td>v</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h1 id="safety?-5" class='section-header'><a
+                           href="#safety?-5">Safety?</a></h1>
+<pre><code class="language-cpp">v.push_back(&quot;Hello&quot;);
+</code></pre>
+
+<table><thead>
+<tr>
+<th>location</th>
+<th>name</th>
+<th>value</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>0x30</td>
+<td>v</td>
+<td>0x18</td>
+</tr>
+<tr>
+<td>0x18</td>
+<td></td>
+<td>&quot;Hello&quot;</td>
+</tr>
+</tbody></table>
+
+<h1 id="safety?-6" class='section-header'><a
+                           href="#safety?-6">Safety?</a></h1>
+<pre><code class="language-cpp">std::string&amp; x = v[0];
+</code></pre>
+
+<table><thead>
+<tr>
+<th>location</th>
+<th>name</th>
+<th>value</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>0x30</td>
+<td>v</td>
+<td>0x18</td>
+</tr>
+<tr>
+<td>0x18</td>
+<td></td>
+<td>&quot;Hello&quot;</td>
+</tr>
+<tr>
+<td>0x14</td>
+<td>x</td>
+<td>0x18</td>
+</tr>
+</tbody></table>
+
+<h1 id="safety?-7" class='section-header'><a
+                           href="#safety?-7">Safety?</a></h1>
+<pre><code class="language-cpp">v.push_back(&quot;world&quot;);
+</code></pre>
+
+<table><thead>
+<tr>
+<th>location</th>
+<th>name</th>
+<th>value</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>0x30</td>
+<td>v</td>
+<td>0x08</td>
+</tr>
+<tr>
+<td>0x18</td>
+<td></td>
+<td>GARBAGE</td>
+</tr>
+<tr>
+<td>0x14</td>
+<td>x</td>
+<td>0x18</td>
+</tr>
+<tr>
+<td>0x08</td>
+<td></td>
+<td>&quot;Hello&quot;</td>
+</tr>
+<tr>
+<td>0x04</td>
+<td></td>
+<td>&quot;world&quot;</td>
+</tr>
+</tbody></table>
+
+<h1 id="safety?-8" class='section-header'><a
+                           href="#safety?-8">Safety?</a></h1>
+<blockquote>
+<p>If the new <code>size()</code> is greater than <code>capacity()</code> then all iterators and
+references (including the past-the-end iterator) are invalidated.</p>
+</blockquote>
+
+<h1 id="safety?-9" class='section-header'><a
+                           href="#safety?-9">Safety?</a></h1><pre class='rust '>
 <span class='kw'>fn</span> <span class='ident'>main</span>() {
-    <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;Hello, world!&quot;</span>);
+    <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[];
+
+    <span class='ident'>v</span>.<span class='ident'>push</span>(<span class='string'>&quot;Hello&quot;</span>);
+
+    <span class='kw'>let</span> <span class='ident'>x</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span><span class='ident'>v</span>[<span class='number'>0</span>];
+
+    <span class='ident'>v</span>.<span class='ident'>push</span>(<span class='string'>&quot;world&quot;</span>);
+
+    <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;{}&quot;</span>, <span class='ident'>x</span>);
 }
 </pre>
 
-<h1 id="a-true-c++-replacement" class='section-header'><a
-                           href="#a-true-c++-replacement">A true C++ replacement</a></h1>
-<pre><code class="language-text">error: mismatched types: expected `&amp;&#39;a html5ever::tokenizer::Tokenizer&lt;html5ever::tree_builder::TreeBuilder&lt;dom::node::TrustedNodeAddress,dom::servohtmlparser::Sink&gt;&gt;`, found `&amp;core::cell::RefCell&lt;html5ever::tokenizer::Tokenizer&lt;html5ever::tree_builder::TreeBuilder&lt;dom::node::TrustedNodeAddress,dom::servohtmlparser::Sink&gt;&gt;&gt;`
+<h1 id="safety?-10" class='section-header'><a
+                           href="#safety?-10">Safety?</a></h1>
+<pre><code class="language-{notrust,ignore}">error: cannot borrow `v` as mutable because it is also borrowed as immutable
+v.push(&quot;world&quot;);
+^
 </code></pre>
 
-<h1 id="very-good-then" class='section-header'><a
-                           href="#very-good-then">Very good then</a></h1>
-<div style="text-align: center; margin-top: 120px">
-<img src="http://www.rust-lang.org/logos/rust-logo-256x256-blk.png">
-</div>
+<h1 id="safety?-11" class='section-header'><a
+                           href="#safety?-11">Safety?</a></h1>
+<pre><code class="language-{notrust,ignore}">note: previous borrow of `v` occurs here; the immutable borrow prevents subsequent moves or mutable borrows of `v` until the borrow ends
+let x = &amp;v[0];
+^
+</code></pre>
+
+<h1 id="safety?-12" class='section-header'><a
+                           href="#safety?-12">Safety?</a></h1><pre class='rust '>
+<span class='kw'>fn</span> <span class='ident'>main</span>() {
+    <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[];
+
+    <span class='ident'>v</span>.<span class='ident'>push</span>(<span class='string'>&quot;Hello&quot;</span>);
+
+    <span class='kw'>let</span> <span class='ident'>x</span> <span class='op'>=</span> <span class='ident'>v</span>[<span class='number'>0</span>].<span class='ident'>clone</span>();
+
+    <span class='ident'>v</span>.<span class='ident'>push</span>(<span class='string'>&quot;world&quot;</span>);
+
+    <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;{}&quot;</span>, <span class='ident'>x</span>);
+}
+</pre>
+
+<h1 id="safety?-13" class='section-header'><a
+                           href="#safety?-13">Safety?</a></h1><pre class='rust '>
+<span class='kw'>fn</span> <span class='ident'>main</span>() {
+    <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>numbers</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1i</span>, <span class='number'>2i</span>, <span class='number'>3i</span>];
+
+    <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='ident'>range</span>(<span class='number'>0u</span>, <span class='number'>3u</span>) {
+        <span class='ident'>spawn</span>(<span class='kw'>proc</span>() {
+            <span class='kw'>for</span> <span class='ident'>j</span> <span class='kw'>in</span> <span class='ident'>range</span>(<span class='number'>0</span>, <span class='number'>3</span>) {
+                <span class='ident'>numbers</span>[<span class='ident'>j</span>] <span class='op'>+=</span> <span class='number'>1</span>
+            }
+        });
+    }
+}
+</pre>
+
+<h1 id="safety?-14" class='section-header'><a
+                           href="#safety?-14">Safety?</a></h1>
+<pre><code class="language-{notrust,ignore}">6:71 error: capture of moved value: `numbers`
+    for j in range(0, 3) { numbers[j] += 1 }
+               ^~~~~~~
+7:50 note: `numbers` moved into closure environment here because it has type `proc():Send`, which is non-copyable (perhaps you meant to use clone()?)
+    spawn(proc() {
+</code></pre>
+
+<h1 id="safety?-15" class='section-header'><a
+                           href="#safety?-15">Safety?</a></h1><pre class='rust '>
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>sync</span>::{<span class='ident'>Arc</span>,<span class='ident'>Mutex</span>};
+
+<span class='kw'>fn</span> <span class='ident'>main</span>() {
+    <span class='kw'>let</span> <span class='ident'>numbers</span> <span class='op'>=</span> <span class='ident'>Arc</span>::<span class='ident'>new</span>(<span class='ident'>Mutex</span>::<span class='ident'>new</span>(<span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1i</span>, <span class='number'>2i</span>, <span class='number'>3i</span>]));
+
+    <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='ident'>range</span>(<span class='number'>0u</span>, <span class='number'>3u</span>) {
+        <span class='kw'>let</span> <span class='ident'>number</span> <span class='op'>=</span> <span class='ident'>numbers</span>.<span class='ident'>clone</span>();
+
+        <span class='ident'>spawn</span>(<span class='kw'>proc</span>() {
+            <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>array</span> <span class='op'>=</span> <span class='ident'>number</span>.<span class='ident'>lock</span>();
+
+            <span class='op'>*</span>(<span class='ident'>array</span>.<span class='ident'>get_mut</span>(<span class='ident'>i</span>)) <span class='op'>+=</span> <span class='number'>1</span>;
+
+            <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;numbers[{}] is {}&quot;</span>, <span class='ident'>i</span>, (<span class='op'>*</span><span class='ident'>array</span>)[<span class='ident'>i</span>]);
+        });
+    }
+}
+</pre>
+
+<h1 id="safety?-16" class='section-header'><a
+                           href="#safety?-16">Safety?</a></h1><pre class='rust '>
+<span class='kw'>fn</span> <span class='ident'>main</span>() {
+    <span class='kw'>let</span> <span class='ident'>numbers</span> <span class='op'>=</span> <span class='ident'>Arc</span>::<span class='ident'>new</span>(<span class='ident'>Mutex</span>::<span class='ident'>new</span>(<span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1i</span>, <span class='number'>2i</span>, <span class='number'>3i</span>]));
+
+    <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='ident'>range</span>(<span class='number'>0u</span>, <span class='number'>3u</span>) {
+        <span class='kw'>let</span> <span class='ident'>number</span> <span class='op'>=</span> <span class='ident'>numbers</span>.<span class='ident'>clone</span>();
+
+        <span class='ident'>spawn</span>(<span class='kw'>proc</span>() {
+            <span class='comment'>// ...</span>
+        });
+    }
+}
+</pre>
+
+<h1 id="safety?-17" class='section-header'><a
+                           href="#safety?-17">Safety?</a></h1><pre class='rust '>
+<span class='ident'>spawn</span>(<span class='kw'>proc</span>() {
+    <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>array</span> <span class='op'>=</span> <span class='ident'>number</span>.<span class='ident'>lock</span>();
+
+    <span class='op'>*</span>(<span class='ident'>array</span>.<span class='ident'>get_mut</span>(<span class='ident'>i</span>)) <span class='op'>+=</span> <span class='number'>1</span>;
+
+    <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;numbers[{}] is {}&quot;</span>, <span class='ident'>i</span>, (<span class='op'>*</span><span class='ident'>array</span>)[<span class='ident'>i</span>]);
+});
+</pre>
+
+<h1 id="accessibility" class='section-header'><a
+                           href="#accessibility">Accessibility</a></h1>
+<p>Systems programming has kept the same tools for decades.</p>
+
+<p>Rust uses tooling that is inspired by Ruby and JavaScript.</p>
+
+<h1 id="cargo" class='section-header'><a
+                           href="#cargo">Cargo</a></h1>
+<pre><code class="language-{bash}">$ cargo new hello_world --bin
+$ cd hello_world
+$ tree .
+.
+├── Cargo.toml
+└── src
+    └── main.rs
+
+1 directory, 2 files
+</code></pre>
+
+<h1 id="cargo-1" class='section-header'><a
+                           href="#cargo-1">Cargo</a></h1>
+<pre><code class="language-{toml}">[package]
+
+name = &quot;hello_world&quot;
+version = &quot;0.0.1&quot;
+authors = [&quot;Your Name &lt;you@example.com&gt;&quot;]
+</code></pre>
+<pre class='rust '>
+<span class='kw'>fn</span> <span class='ident'>main</span>() {
+    <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;Hello, world!&quot;</span>)
+}
+</pre>
+
+<h1 id="cargo-2" class='section-header'><a
+                           href="#cargo-2">Cargo</a></h1>
+<pre><code class="language-{bash}">$ cargo run
+   Compiling hello_world v0.0.1 (file:///Users/you/src/hello_world)
+     Running `target/hello_world`
+Hello, world!
+</code></pre>
+
+<h1 id="cargo-3" class='section-header'><a
+                           href="#cargo-3">Cargo</a></h1>
+<pre><code class="language-{toml}">[package]
+
+name = &quot;hello_world&quot;
+version = &quot;0.0.1&quot;
+authors = [&quot;Your Name &lt;someone@example.com&gt;&quot;]
+
+[dependencies.semver]
+
+git = &quot;https://github.com/rust-lang/semver.git&quot;
+</code></pre>
+
+<pre><code class="language-{bash}">$ cargo run
+    Updating git repository `https://github.com/rust-lang/semver.git`
+   Compiling semver v0.0.1 (https://github.com/rust-lang/semver.git#bf739419)
+   Compiling hello_world v0.0.1 (file:///home/you/projects/hello_world)
+     Running `target/hello_world`
+Hello, world!
+</code></pre>
+
+<h1 id="thanks!" class='section-header'><a
+                           href="#thanks!">Thanks!</a></h1>
+<p><img src="http://www.rust-lang.org/logos/rust-logo-256x256-blk.png" alt="rust logo"></p>
+
+<p>Rust makes low-level programming <strong>accessible</strong> to those who haven&#39;t done it, and
+<strong>safer</strong> for those who have.</p>
+
+<p>@steveklabnik</p>
 
     <script type="text/javascript">
         window.playgroundUrl = "";
