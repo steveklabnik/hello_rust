@@ -213,7 +213,7 @@ fn main() {
         spawn(proc() {
             let mut array = number.lock();
 
-            *(array.get_mut(i)) += 1;
+            (*array)[i] += 1;
 
             println!("numbers[{}] is {}", i, (*array)[i]);
         });
@@ -243,7 +243,7 @@ fn main() {
 spawn(proc() {
     let mut array = number.lock();
 
-    *(array.get_mut(i)) += 1;
+    (*array)[i] += 1;
 
     println!("numbers[{}] is {}", i, (*array)[i]);
 });
